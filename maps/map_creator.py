@@ -1,9 +1,10 @@
 import folium
 import polyline
 from folium.plugins import GroupedLayerControl
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import streamlit as st
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,11 @@ class MapCreator:
             
         try:
             logger.debug(f"Getting directions from {origin} to {destination}")
+            
+            # Use a future departure time (next day at 8 AM) to avoid INVALID_REQUEST error
+            future_time = datetime.now() + timedelta(days=1)
+            future_time = future_time.replace(hour=8, minute=0, second=0, microsecond=0)
+            
             if waypoints:
                 waypoints = [f"{point['lat']},{point['lng']}" for point in waypoints]
                 directions = self.gmaps.directions(
@@ -49,14 +55,14 @@ class MapCreator:
                     waypoints=waypoints,
                     optimize_waypoints=True,
                     mode="driving",
-                    departure_time=datetime.now()
+                    departure_time=future_time
                 )
             else:
                 directions = self.gmaps.directions(
                     origin,
                     destination,
                     mode="driving",
-                    departure_time=datetime.now()
+                    departure_time=future_time
                 )
 
             if directions:
@@ -79,6 +85,16 @@ class MapCreator:
             logger.error(f"Error getting directions: {str(e)}")
             st.error(f"Error getting directions: {str(e)}")
             return None
+
+    def _get_cluster_centroid_and_radius(self, group):
+        lats = [staff['latitude'] for staff in group]
+        lngs = [staff['longitude'] for staff in group]
+        centroid = (np.mean(lats), np.mean(lngs))
+        # Radius: max distance from centroid to any point in the group (in degrees, for display)
+        radius = max(np.sqrt((lat-centroid[0])**2 + (lng-centroid[1])**2) for lat, lng in zip(lats, lngs))
+        # Convert to meters (approx, 1 deg ~ 111km)
+        radius_m = radius * 111_000 * 1.2  # 20% padding
+        return centroid, radius_m
 
     def create_map(self, routes):
         """
@@ -196,18 +212,17 @@ class MapCreator:
                         """
                         
                         # Add staff marker
-                        folium.CircleMarker(
+                        folium.Marker(
                             location=[staff['latitude'], staff['longitude']],
-                            radius=8,
                             popup=folium.Popup(
                                 popup_content,
                                 max_width=200
                             ),
-                            color=color,
-                            fill=True,
-                            fill_color=color,
-                            fill_opacity=0.7,
-                            weight=2,
+                            icon=folium.Icon(
+                                color=color,
+                                icon='user',
+                                prefix='fa'
+                            ),
                             tooltip=f"Stop #{idx}: {staff['name']}"
                         ).add_to(route_group)
                 
