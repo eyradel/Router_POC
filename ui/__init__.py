@@ -6,7 +6,8 @@ from .components import (
     create_file_uploader,
     create_optimize_button,
     display_staff_directory,
-    display_route_details
+    display_route_details,
+    display_validation_results
 )
 
 __all__ = [
@@ -17,5 +18,6 @@ __all__ = [
     'create_file_uploader',
     'create_optimize_button',
     'display_staff_directory',
-    'display_route_details'
+    'display_route_details',
+    'display_validation_results'
 ] 

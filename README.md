@@ -1,6 +1,85 @@
-# Ride Router - Staff Transport Optimization
+# Ride Router - Advanced Staff Transport Optimization
 
-A comprehensive staff transport route optimization application built with Streamlit, featuring SOM clustering algorithms and interactive mapping.
+A comprehensive staff transport route optimization application built with Streamlit, featuring multiple advanced algorithms including SOM clustering, Genetic Algorithms, Ant Colony Optimization, and hybrid approaches.
+
+## 🚀 Enhanced Features
+
+- **Multiple Optimization Algorithms**: SOM clustering, Genetic Algorithm, Ant Colony Optimization, and Hybrid approaches
+- **Advanced SOM Clustering**: Enhanced with PCA initialization, convergence monitoring, and quality metrics
+- **Genetic Algorithm**: Multi-objective optimization with adaptive mutation and crossover
+- **Ant Colony Optimization**: Pheromone-based path finding with local search
+- **Hybrid Optimization**: Combines multiple algorithms for best results
+- **Algorithm Comparison**: Built-in comparison tool to evaluate different approaches
+- **Interactive Maps**: Folium-based maps with multiple layers and controls
+- **Google Maps Integration**: Real-time route directions and distance calculations
+- **Data Validation**: Comprehensive staff data validation and cleaning
+- **Metrics Dashboard**: Detailed cost and distance analytics
+- **Performance Monitoring**: Real-time optimization progress and statistics
+- **Responsive UI**: Modern, responsive web interface
+
+## 📁 Project Structure
+
+```
+Router_poc/
+├── app.py                          # Main application entry point
+├── main.py                         # Original monolithic file (legacy)
+├── test_algorithms.py              # Algorithm testing and comparison
+├── requirements.txt                # Python dependencies
+├── README.md                       # This file
+├── .env                           # Environment variables (create this)
+├── algorithms/                    # Enhanced algorithm implementations
+│   ├── __init__.py
+│   ├── som_cluster.py            # Enhanced Self-Organizing Map clustering
+│   ├── route_optimizer.py        # Original route optimization engine
+│   ├── genetic_optimizer.py      # Genetic Algorithm implementation
+│   ├── ant_colony_optimizer.py   # Ant Colony Optimization
+│   ├── hybrid_optimizer.py       # Hybrid optimization combining multiple algorithms
+│   └── algorithm_comparison.py   # Algorithm comparison utility
+├── maps/                          # Map visualization
+│   ├── __init__.py
+│   └── map_creator.py            # Interactive map creation
+├── ui/                           # User interface components
+│   ├── __init__.py
+│   └── components.py             # UI components and styling
+├── data/                         # Data handling
+│   ├── __init__.py
+│   └── sample_data.py           # Sample data generation
+└── utils/                        # Utility functions
+    ├── __init__.py
+    └── metrics.py               # Metrics formatting and calculations
+```
+
+## 🧠 Algorithm Overview
+
+### 1. Enhanced SOM Clustering (`SOMCluster`)
+- **Multiple Initialization Methods**: Random, Linear, and PCA-based initialization
+- **Convergence Monitoring**: Early stopping and convergence detection
+- **Quality Metrics**: Quantization error, topographic error, and silhouette score
+- **Adaptive Parameters**: Dynamic learning rate and neighborhood radius
+
+### 2. Genetic Algorithm (`GeneticRouteOptimizer`)
+- **Multi-Objective Optimization**: Minimizes cost while balancing route efficiency
+- **Advanced Operators**: Tournament selection, route-based crossover, multiple mutation types
+- **Elite Preservation**: Maintains best solutions across generations
+- **Adaptive Parameters**: Population size, mutation rate, and crossover rate
+
+### 3. Ant Colony Optimization (`AntColonyOptimizer`)
+- **Pheromone-Based Search**: Uses pheromone trails for path optimization
+- **Distance Matrix**: Pre-calculated distances for efficient computation
+- **Local Search**: Post-optimization improvement
+- **Multiple Colonies**: Parallel optimization with different parameters
+
+### 4. Hybrid Optimization (`HybridRouteOptimizer`)
+- **Multiple Strategies**: Fast, Balanced, and Full optimization pipelines
+- **Algorithm Combination**: SOM + Genetic + Ant Colony + Local Search
+- **Adaptive Selection**: Automatically selects best approach based on data size
+- **Performance Monitoring**: Tracks optimization progress and results
+
+### 5. Algorithm Comparison (`AlgorithmComparison`)
+- **Comprehensive Testing**: Tests all algorithms on same dataset
+- **Performance Metrics**: Cost, distance, efficiency, and execution time
+- **Statistical Analysis**: Detailed performance reports
+- **Best Algorithm Selection**: Recommends optimal approach for specific metrics
 
 ##  Project Structure
 

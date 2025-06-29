@@ -226,20 +226,23 @@ def display_route_details(routes, optimizer):
     metrics = {
         'total_distance': 0,
         'total_cost': 0,
-        'total_duration': 0
+        'total_passengers': 0
     }
     
     for route_name, route in routes.items():
         with st.expander(f" {route_name}"):
-            distance, cost = optimizer.calculate_route_metrics(route)
+            distance, cost, passenger_count = optimizer.calculate_route_metrics(route)
             metrics['total_distance'] += distance
             metrics['total_cost'] += cost
+            metrics['total_passengers'] += passenger_count
             
-            col1, col2 = st.columns(2)
+            col1, col2, col3 = st.columns(3)
             with col1:
                 st.metric("Distance", f"{distance:.2f} km")
             with col2:
                 st.metric("Cost", f"GHC{cost:.2f}")
+            with col3:
+                st.metric("Passengers", passenger_count)
             
             st.dataframe(
                 pd.DataFrame(route)[['name', 'address', 'distance_to_office']],
@@ -250,7 +253,40 @@ def display_route_details(routes, optimizer):
         'Total Distance': f"{metrics['total_distance']:.2f} km",
         'Total Cost': f"GHC{metrics['total_cost']:.2f}",
         'Number of Routes': len(routes),
+        'Total Passengers': metrics['total_passengers'],
         'Average Cost/Route': f"GHC{metrics['total_cost']/len(routes):.2f}"
     })
     
     return metrics 
+
+def display_validation_results(validation_result):
+    """Display validation results for staff data"""
+    logger.debug("Displaying validation results")
+    st.subheader("Data Validation Results")
+    
+    if validation_result is None:
+        st.error("❌ Data validation failed")
+        st.info("Please check your data format and try again.")
+        return False
+    
+    if isinstance(validation_result, pd.DataFrame) and len(validation_result) > 0:
+        st.success("✅ Data validation successful!")
+        
+        # Display validation summary
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Total Staff", len(validation_result))
+        with col2:
+            st.metric("Valid Records", len(validation_result))
+        with col3:
+            avg_distance = validation_result['distance_to_office'].mean()
+            st.metric("Avg Distance to Office", f"{avg_distance:.2f} km")
+        
+        # Show data preview
+        with st.expander("📋 Data Preview"):
+            st.dataframe(validation_result.head(10), height=300)
+        
+        return True
+    else:
+        st.error("❌ No valid data found")
+        return False 

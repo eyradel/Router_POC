@@ -388,7 +388,7 @@ class StaffTransportOptimizer:
         """Calculate total distance and cost for a route"""
         if not route:
             logger.debug("Empty route provided, returning zero metrics")
-            return 0, 0
+            return 0, 0, 0
         
         try:
             total_distance = 0
@@ -401,11 +401,11 @@ class StaffTransportOptimizer:
             
             cost = total_distance * self.COST_PER_KM
             logger.debug(f"Route metrics calculated: distance={total_distance:.2f}km, cost={cost:.2f}")
-            return total_distance, cost
+            return total_distance, cost, len(route)
             
         except Exception as e:
             logger.error(f"Error calculating route metrics: {str(e)}")
-            return 0, 0
+            return 0, 0, 0
 
     def get_route_directions(self, origin, destination, waypoints=None):
         """Get route directions using Google Maps Directions API"""
@@ -611,23 +611,23 @@ class StaffTransportOptimizer:
 
     def get_route_summary(self, route):
         """
-        Get a detailed summary of route metrics
+        Get detailed summary for a route
         
         Args:
-            route (list): List of dictionaries containing staff information
+            route (list): List of staff dictionaries in the route
             
         Returns:
             dict: Dictionary containing route metrics
         """
         try:
-            distance, cost = self.calculate_route_metrics(route)
+            distance, cost, passenger_count = self.calculate_route_metrics(route)
             
             summary = {
                 'total_distance': distance,
                 'total_cost': cost,
-                'passenger_count': len(route),
-                'cost_per_passenger': cost / len(route) if route else 0,
-                'distance_per_passenger': distance / len(route) if route else 0,
+                'passenger_count': passenger_count,
+                'cost_per_passenger': cost / passenger_count if passenger_count > 0 else 0,
+                'distance_per_passenger': distance / passenger_count if passenger_count > 0 else 0,
                 'start_point': route[0]['address'] if route else None,
                 'end_point': 'Office',
                 'stops': len(route)
@@ -661,10 +661,10 @@ class StaffTransportOptimizer:
             }
             
             for route_name, route in routes.items():
-                distance, cost = self.calculate_route_metrics(route)
+                distance, cost, passenger_count = self.calculate_route_metrics(route)
                 total_metrics['total_distance'] += distance
                 total_metrics['total_cost'] += cost
-                total_metrics['total_passengers'] += len(route)
+                total_metrics['total_passengers'] += passenger_count
             
             if routes:
                 total_metrics['average_route_distance'] = total_metrics['total_distance'] / len(routes)
@@ -1077,7 +1077,7 @@ def main():
                 
                 for route_name, route in st.session_state.routes.items():
                     with st.expander(f" {route_name}"):
-                        distance, cost = optimizer.calculate_route_metrics(route)
+                        distance, cost, passenger_count = optimizer.calculate_route_metrics(route)
                         metrics['total_distance'] += distance
                         metrics['total_cost'] += cost
                         
