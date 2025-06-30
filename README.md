@@ -132,7 +132,7 @@ staff_id,name,latitude,longitude,address
 - **Metrics**: Formatting and calculation utilities
 - Summary generation for analytics
 
-## 🔍 Usage
+##  Usage
 
 1. **Start the application**: Run `streamlit run app.py`
 2. **Choose data input**: Upload CSV or use sample data
